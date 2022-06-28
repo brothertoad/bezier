@@ -1,6 +1,7 @@
 package bezier
 
 import (
+  "fmt"
   "image"
 )
 
@@ -18,16 +19,32 @@ type Bezier struct {
   P0, P1, P2, P3 image.Point
 }
 
+func SvgControlPointsI(p []image.Point) []string {
+  beziers := GetControlPointsI(p)
+  svgs := make([]string, len(beziers))
+  for j, b := range(beziers) {
+    svgs[j] = "M " + pointAsKnot(b.P0) + " C " + pointAsKnot(b.P1) + ", " +
+      pointAsKnot(b.P2) + ", " + pointAsKnot(b.P3)
+  }
+  return svgs
+}
+
+// Converts an image.Point to a string consisting of the x value and
+// the y value, separated by a space, suitable for SVG paths.
+func pointAsKnot(p image.Point) string {
+  return fmt.Sprintf("%d %d", p.X, p.Y)
+}
+
 func GetControlPointsI(p []image.Point) []Bezier {
   // Convert integer values to floats, calcalute control points, and then
   // convert back to integers.
-  pf := make([]PointF, len(p), len(p))
+  pf := make([]PointF, len(p))
   for j, source := range(p) {
     pf[j].X = float64(source.X)
     pf[j].Y = float64(source.Y)
   }
   bezierF := GetControlPointsF(pf)
-  bezier := make([]Bezier, len(bezierF), len(bezierF))
+  bezier := make([]Bezier, len(bezierF))
   for j, bz := range(bezierF) {
     bezier[j].P0.X = int(bz.P0.X)
     bezier[j].P0.Y = int(bz.P0.Y)
@@ -44,19 +61,19 @@ func GetControlPointsI(p []image.Point) []Bezier {
 // Algorithm ported from https://www.particleincell.com/wp-content/uploads/2012/06/bezier-spline.js
 func GetControlPointsF(p []PointF) []BezierF {
   n := len(p) - 1 // number of segments
-  bezier := make([]BezierF, n, n)
+  bezier := make([]BezierF, n)
 
   // Fill in the end points of the Bezier curves.
-  for j, bz := range(bezier) {
-    bz.P0.X, bz.P0.Y = p[j].X, p[j].Y
-    bz.P3.X, bz.P3.Y = p[j+1].X, p[j+1].Y
+  for j, _ := range(bezier) {
+    bezier[j].P0.X, bezier[j].P0.Y = p[j].X, p[j].Y
+    bezier[j].P3.X, bezier[j].P3.Y = p[j+1].X, p[j+1].Y
   }
 
   // Slices needed for calculations, listed as "rhs vector" on page listed above.
-  a := make([]PointF, n, n)
-  b := make([]PointF, n, n)
-  c := make([]PointF, n, n)
-  r := make([]PointF, n, n)
+  a := make([]PointF, n)
+  b := make([]PointF, n)
+  c := make([]PointF, n)
+  r := make([]PointF, n)
 
   a[0].X, a[0].Y = 0.0, 0.0
   b[0].X, b[0].Y = 2.0, 2.0
