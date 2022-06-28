@@ -10,18 +10,36 @@ import (
   "github.com/brothertoad/bezier"
 )
 
+const prefix = `<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="1800px" height="1000px" viewBox="0 0 1800 1000" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink= "http://www.w3.org/1999/xlink">
+  <style>
+  * {
+    fill: none;
+    stroke: black;
+    stroke-width: 3;
+  }
+  </style>
+`
+
+const radius = 4
+
 func main() {
   var points []image.Point
   if len(os.Args) > 1 {
     points = argsToPoints(os.Args[1:])
   } else {
-    points = argsToPoints([]string{ "300,200", "417,344", "388,411", "440,477", "500,500" })
+    points = argsToPoints([]string{ "300,200", "350,344", "388,411", "440,477", "500,500" })
   }
-  fmt.Printf("%+v\n", points)
   segments := bezier.SvgControlPointsI(points)
+  fmt.Print(prefix)
   for _, s := range(segments) {
-    fmt.Printf("%s\n", s)
+    fmt.Println(`<path d="`, s, `"/>`)
   }
+  for _, p := range(points) {
+    fmt.Printf(`<circle cx="%d" cy="%d" r="%d"/>` + "\n", p.X, p.Y, radius)
+  }
+  fmt.Println("</svg>")
 }
 
 func argsToPoints(args []string) []image.Point {
