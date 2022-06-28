@@ -1,4 +1,4 @@
-package catmullrom
+package bezier
 
 import (
   "image"
