@@ -48,8 +48,8 @@ func GetControlPointsF(p []PointF) []BezierF {
 
   // Fill in the end points of the Bezier curves.
   for j, bz := range(bezier) {
-    bz.P0 = p[j]
-    bz.P3 = p[j+1]
+    bz.P0.X, bz.P0.Y = p[j].X, p[j].Y
+    bz.P3.X, bz.P3.Y = p[j+1].X, p[j+1].Y
   }
 
   // Slices needed for calculations, listed as "rhs vector" on page listed above.
