@@ -114,8 +114,8 @@ func GetControlPointsF(p []PointF) []BezierF {
 
   // Compute second control point (P2 in BezierF), from first to last.
   for j := 0; j < n - 1; j++ {
-    bezier[j].P2.X = 2 * p[j].X - bezier[j].P1.X
-    bezier[j].P2.Y = 2 * p[j].Y - bezier[j].P1.Y
+    bezier[j].P2.X = 2 * p[j+1].X - bezier[j+1].P1.X
+    bezier[j].P2.Y = 2 * p[j+1].Y - bezier[j+1].P1.Y
   }
   bezier[n-1].P2.X = 0.5 * (p[n].X + bezier[n-1].P1.X)
   bezier[n-1].P2.Y = 0.5 * (p[n].Y + bezier[n-1].P1.Y)
