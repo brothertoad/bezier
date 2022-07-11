@@ -20,7 +20,10 @@ type Bezier struct {
 }
 
 func SvgControlPointsI(p []image.Point) []string {
-  beziers := GetControlPointsI(p)
+  return ControlPointsToSvgI(GetControlPointsI(p))
+}
+
+func ControlPointsToSvgI(beziers []Bezier) []string {
   svgs := make([]string, len(beziers))
   for j, b := range(beziers) {
     svgs[j] = "M " + pointAsKnot(b.P0) + " C " + pointAsKnot(b.P1) + ", " +

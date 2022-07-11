@@ -19,14 +19,18 @@ const prefix = `<?xml version="1.0" standalone="no"?>
     stroke: black;
     stroke-width: 3;
   }
-  .knot {
-    fill: blue;
-    stroke: blue;
-  }
   .empty {
     fill: none;
     stroke: blue;
     stroke-width: 2;
+  }
+  .knot {
+    fill: blue;
+    stroke: blue;
+  }
+  .control {
+    fill: green;
+    stroke: green;
   }
   </style>
   <rect x="20" y="20" width="1160" height="760" class="empty"/>
@@ -41,13 +45,19 @@ func main() {
   } else {
     points = argsToPoints([]string{ "200,200", "350,344", "388,431", "460,527", "800,400" })
   }
-  segments := bezier.SvgControlPointsI(points)
+  // Get the beziers separately so we can plot the control points.
+  beziers := bezier.GetControlPointsI(points)
+  segments := bezier.ControlPointsToSvgI(beziers)
   fmt.Print(prefix)
   for _, s := range(segments) {
     fmt.Println(`<path d="`, s, `"/>`)
   }
   for _, p := range(points) {
     fmt.Printf(`<circle cx="%d" cy="%d" r="%d" class="knot"/>` + "\n", p.X, p.Y, radius)
+  }
+  for _, bz := range(beziers) {
+    fmt.Printf(`<circle cx="%d" cy="%d" r="%d" class="control"/>` + "\n", bz.P1.X, bz.P1.Y, radius)
+    fmt.Printf(`<circle cx="%d" cy="%d" r="%d" class="control"/>` + "\n", bz.P2.X, bz.P2.Y, radius)
   }
   fmt.Println("</svg>")
 }
