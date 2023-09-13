@@ -3,11 +3,10 @@ package main
 import (
   "fmt"
   "image"
-  "log"
   "os"
-  "strconv"
   "strings"
   "github.com/brothertoad/bezier"
+  "github.com/brothertoad/btu"
 )
 
 const prefix = `<?xml version="1.0" standalone="no"?>
@@ -66,16 +65,8 @@ func argsToPoints(args []string) []image.Point {
   points := make([]image.Point, len(args))
   for j, arg := range(args) {
     coords := strings.Split(arg, ",")
-    x, err := strconv.Atoi(coords[0])
-    if err != nil {
-      log.Fatalf("x value %s is not a number\n", coords[0])
-    }
-    y, err := strconv.Atoi(coords[1])
-    if err != nil {
-      log.Fatalf("y value %s is not a number\n", coords[1])
-    }
-    points[j].X = x
-    points[j].Y = y
+    points[j].X = btu.Atoi(coords[0])
+    points[j].Y = btu.Atoi(coords[1])
   }
   return points
 }
